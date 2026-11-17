@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.16.0](https://github.com/develar/branch-deck/compare/v1.15.0...v1.16.0) (2026-11-17)
+
+
+### Features
+
+* **bd:** a wait is a status, not an action: the Status cell says the state the next step of a branch waits in ("Awaiting review", "Changes requested", "Draft", "Into release-252", "In [#12](https://github.com/develar/branch-deck/issues/12)", "Merges when checks pass") where nothing of the branch's own says more, a click and O open its pull request, and no slot of actions shows it, the row, the header of an island (which says the wait of its whole stack beside its pull request) and the landing overview alike; Rust names the steps that are states (`StepKind::is_wait`, `NextStep.wait`, `RowFact::Wait`), `brd status` says `waits`, and UX Writing's "Status says, Actions do" replaces the quiet step ([6416da5](https://github.com/develar/branch-deck/commit/6416da571f02394c6822f6ec2d7b7bba132c70b9))
+* **review:** a BUILD file is folded by its content, not its name: the sections its generator writes, its load lines and its labels fold, the Starlark a person wrote is read ([f89ac08](https://github.com/develar/branch-deck/commit/f89ac08f200cfb4457c11f5ea89824249083a020))
+
+
+### Bug Fixes
+
+* **bd:** a running robot reads whole in the Status column, which widens for it, so "1h 57m · usually ~1h 39m" no longer paints over the pull request chip after it under the cap of the state track; the robot chip of a row shrinks to its track, and the layout specs check that no track of a row paints over another ([b4ac579](https://github.com/develar/branch-deck/commit/b4ac57932df0fa383dcbf3b99907a25d701fc841))
+* **e2e:** the deletion of a test repository closes again the sessions its commands opened after the first close and runs out the clock their operations wait on, and `setupRepo` deletes every repository it made, so a full run ends with no repository, no orphan session and no app of a deleted repository; `/debug/counts` and the warning of a stuck deletion name the test, the commands and the sessions that hold it ([cd10ded](https://github.com/develar/branch-deck/commit/cd10ded8f1625b6caad2486e98ae62b695e7f297))
+* **facts:** the task of the facts of a session ends at its close, its timers with it, also while reads of it are in flight, takes its tickets of one epoch of its session, and hears the session close again as it opens anew for a new lease, so the E2E server's run-out clock of a deleted repository no longer fires its timers one after another (2988 waits for one test of a full run, 2 now) ([f7b67db](https://github.com/develar/branch-deck/commit/f7b67db2ca9cac1938d2c5277b0c63a8344c6395))
+* **review:** a review fetch tells the session how it ended and keeps the head it brought apart from the refs the prunes keep, so a fetch whose window moved on or closed keeps no refs but gives its window the head, a fetch that fails or is stopped keeps nothing while no window shows its pull request, and the prunes of a session run in order, the newest waiting one in place of the older, the first prune of a start pruning whatever it keeps, a fetch writing only once those decided before it ended, a wait its stop ends (the reviews of 366c4a3e6, 9b2b34249 and 06daf742d) ([#237](https://github.com/develar/branch-deck/issues/237)) ([b6dd952](https://github.com/develar/branch-deck/commit/b6dd952f91fef102fcf5554407c76d3a8109e55b))
+* **sync:** the mark of a sync takes the lock of the lease only for a file it writes or one that is there to remove, so a sync of a worktree marked already writes no holder file beside the operations registry and never waits up to 10 s behind another process for a mark of a build before that is not there ([57c3abd](https://github.com/develar/branch-deck/commit/57c3abd0daa96fd4ce1e6ad9fe8381869043406b))
+
+
+### Performance Improvements
+
+* **engine:** a look of the watch of the operations registry reads `operations.json` only when its stat changed, a session joined or a window gained the focus, a read failed, or its last read is 2 s old, and the next look comes then at the latest, so the events of the other files of `$GIT_COMMON_DIR/branch-deck` cost four stats, and an open, a read or a close without a write wakes no watch, so on Linux the read of a look no longer asks the next one, for ever ([c005623](https://github.com/develar/branch-deck/commit/c0056236a962b81742350b98de4c0e6a02fb3bc6))
+
 ## [1.15.0](https://github.com/develar/branch-deck/compare/v1.14.1...v1.15.0) (2026-11-17)
 
 
